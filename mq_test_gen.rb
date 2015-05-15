@@ -511,13 +511,40 @@ def generateComment
 
 	return "<!-- #{comment} -->"
 
-end	
+end
+
+
+
+# Prints the available commands to screen
+def printHelpScreen
+
+	puts("\n--- AVAILABLE COMMANDS ---")
+	puts("'createCity':  Adds a city to the city dictionary.")
+	puts("'deleteCity':  Deletes a city from the city dictionary and possibly the spatial map.")
+	puts("'clearAll':  Clears all entries of the dictionaries and spatial map.")
+	puts("'listCities':  Lists all cities in dictionary based on name or coordinates.")
+	puts("'printAvlTree':  Prints the data stored in the AVL tree.")
+	puts("'mapRoad':  Maps a road to the spatial map.")
+	puts("'mapAirport':  Maps an airport to the spatial map.")
+	puts("'unmapRoad':  Removes a road from the spatial map.")
+	puts("'unmapAirport':  Removes an airport from the spatial map.")
+	puts("'printPMQuadtree':  Prints the data stored in the spatial map.")
+	puts("'saveMap':  Saves the spatial map as an image file.")
+	puts("'globalRangeCities':  Locates all metros within the spatial map and lists all cities of these metros.")
+	puts("'nearestCity':  Locates the nearest city in the spatial map to the given coordinate.")
+	puts("'nearestAirport':  Locates the nearest airport in the spatial map to the given coordinate.")
+	puts("'shortestPath':  Finds the shortest path from one city to another.")
+	puts("'comment':  Inserts a comment into the generated XML document.")
+	puts("'help':  Displays the help menu.")
+	puts("'done'/'stop':  Halts the XML document generation.")
+
+end
 
 
 
 # Lets the user specify how many tests to generate
 # for a specific command.
-def generateRandomInput
+def generateXMLInput
 
 	# keep generating commands until user specifies
 	command = ""
@@ -533,7 +560,7 @@ def generateRandomInput
 		end
 
 		# specify how many tests to generate
-		if (command != "done" && command != "stop" && command != "comment")
+		if (command != "done" && command != "stop" && command != "comment" && command != "help")
 			print("\nHow many tests to generate: ")
 			test_amount = $stdin.readline.chomp
 			while (test_amount !~ /^[0-9]+$/)
@@ -543,7 +570,7 @@ def generateRandomInput
 		end
 
 		# determine whether to generate parameters randomly or custom
-		if (command != "done" && command != "stop" && command != "clearAll" && command != "listCities" && command != "printAvlTree" && command != "comment")
+		if (command != "done" && command != "stop" && command != "clearAll" && command != "listCities" && command != "printAvlTree" && command != "comment" && command != "help")
 			print("\nEnter how to generate parameters (random or custom): ")
 			paramGen = $stdin.readline.chomp
 			while ((paramGen != "random" && paramGen != "custom" && paramGen.length > 1) || (paramGen.length == 1 && paramGen[0] != 'r' && paramGen[0] != 'c'))
@@ -585,6 +612,8 @@ def generateRandomInput
 			xml_full_results += "\n" + generateShortestPath(test_amount.to_i, paramGen[0] == 'r')
 		elsif (command == "comment")
 			xml_full_results += "\n" + generateComment
+		elsif (command == "help")
+			printHelpScreen
 		elsif (command != "done" && command != "stop")
 			puts("Invalid command was provided.")
 		end
@@ -600,7 +629,7 @@ end
 
 
 
-################################# CONSTRUCTING XML DOCUMENT ######################################
+##################################### CONSTRUCTING XML DOCUMENT ######################################
 
 puts("Hello, welcome to the MeeshQuest-Part3 Test Generator!\n\n")
 
@@ -613,13 +642,12 @@ $colors = ["red", "green", "blue", "yellow", "purple", "orange", "black"]
 # generating the xml input
 xml_input = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n"
 xml_input += createInitialCommandTag
-xml_input += generateRandomInput
+xml_input += generateXMLInput
 xml_input += "\n\n</commands>"
 
 # creating the xml file
 print("\nEnter a filename: ")
-filename = $stdin.readline
-filename.chomp!
+filename = $stdin.readline.chomp
 if (filename =~ /.xml$/)
 	File.open(filename, "w+") { |file| file.write(xml_input) }
 else
